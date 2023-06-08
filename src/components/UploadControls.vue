@@ -2,33 +2,80 @@
     <div class="controls-container">
         <form @submit.prevent="">
             <div>
-                <button class="control-btn enable" @click="uploadHomeOwnerData">Select Homeowner Data</button>
-                <input ref="uploadFileButton" type="file" accept=".csv" @change="validateFile"> 
+
+                <button 
+                class="control-btn enable" 
+                @click="uploadHomeOwnerData">Select Homeowner Data</button>
+
+                <input 
+                ref="uploadFileButton" 
+                type="file" 
+                accept=".csv" 
+                @change="validateFile"> 
+
             </div>
             <div>
-                <input type="submit" class="control-btn disable" :disabled="enabledSubmit" value="Submit">
+                <input 
+                type="submit" 
+                class="control-btn" 
+                :class="{disable: !enabledSubmit, enable: enabledSubmit}" 
+                :disabled="enabledSubmit" value="Submit">
             </div>
         </form>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { WritableComputedRef, computed, ref } from 'vue';
+import UploadControlsConstants from '@/constants/UploadControlsConstants'
+import UploadError from "@/interfaces/UploadControlsInterfaces/UploadError";
+import { useStore } from 'vuex';
 
-const uploadFileButton = ref<HTMLButtonElement | null>(null)
+const store = useStore();
+
+const uploadFileButton = ref<HTMLButtonElement | null>()
+let enabledSubmit = ref<boolean>(false);
 
 const uploadHomeOwnerData = () => {
     uploadFileButton.value?.click()
 }
 
-const validateFile = (e: Event) => {
+let uploadErrors: WritableComputedRef<UploadError[]> = computed({
+    get(): UploadError[] { return store.getters.getUploadErrors },
+    set(uploadErrors: UploadError[]): void { store.commit("setUploadErrors", uploadErrors)}
+})
+
+const validateFile = (e: Event): void => {
+
+    const { undefinedValue, invalidFileType } = UploadControlsConstants.uploadErrorMesssages
+
     const el = e.target as HTMLInputElement;
     const file: File | undefined = el.files?.[0];
-    console.log(file?.type)
+    let errors: UploadError[] = [];
+
+    if(typeof(file) == undefined){
+        let uploadError: UploadError = {
+            msg: undefinedValue
+        };
+        errors.push(uploadError)
+    }
+
+    if(file?.type !== UploadControlsConstants.desiredFileType){
+        let uploadError: UploadError = {
+            msg: invalidFileType
+        };
+        errors.push(uploadError)
+    }
+
+    console.log(errors);
+
+    if(!errors.length){
+        enabledSubmit.value = true;
+    } else {
+        uploadErrors.value = errors;
+    }
 }
 
-
-let enabledSubmit = ref<boolean>(false);
 
 </script>
 
