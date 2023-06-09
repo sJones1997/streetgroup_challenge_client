@@ -2,10 +2,9 @@
     <div class="controls-container">
         <form @submit.prevent="">
             <div>
-
                 <button 
                 class="control-btn enable" 
-                @click="uploadHomeOwnerData">Select Homeowner Data</button>
+                @click="uploadHomeOwnerData">Import Homeowner Data</button>
 
                 <input 
                 ref="uploadFileButton" 
@@ -22,6 +21,17 @@
                 :disabled="enabledSubmit" value="Submit">
             </div>
         </form>
+        <div
+        v-if="uploadErrors.length"
+        class="upload-error-container">
+            <p 
+            class="upload-error" 
+            v-for="({msg}, index) in uploadErrors" 
+            :id="`error_${index}`" 
+            :key="index">
+            {{ msg }}
+            </p>
+        </div>
     </div>
 </template>
 
@@ -52,22 +62,26 @@ const validateFile = (e: Event): void => {
     const el = e.target as HTMLInputElement;
     const file: File | undefined = el.files?.[0];
     let errors: UploadError[] = [];
+    uploadErrors.value = errors
 
-    if(typeof(file) == undefined){
+    if(file != undefined){
+        
+        if(file?.type !== UploadControlsConstants.desiredFileType){
+            let uploadError: UploadError = {
+                msg: invalidFileType
+            };
+            errors.push(uploadError)
+        }
+
+    } else {
+
         let uploadError: UploadError = {
             msg: undefinedValue
         };
         errors.push(uploadError)
+
     }
 
-    if(file?.type !== UploadControlsConstants.desiredFileType){
-        let uploadError: UploadError = {
-            msg: invalidFileType
-        };
-        errors.push(uploadError)
-    }
-
-    console.log(errors);
 
     if(!errors.length){
         enabledSubmit.value = true;
@@ -114,6 +128,12 @@ input[type=file] {
 
 .controls-container form > *{
     margin-right: 1em;
+}
+
+.upload-error {
+    color: #ca5e5a;
+    font-size: 0.9em;
+    font-weight: 600;
 }
 
 </style>
