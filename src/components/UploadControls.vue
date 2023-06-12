@@ -1,24 +1,26 @@
 <template>
     <div class="controls-container">
-        <form @submit.prevent="">
+        <form @submit.prevent="submitForm">
             <div>
                 <button 
+                type="button"
                 class="control-btn enable" 
                 @click="uploadHomeOwnerData">Import Homeowner Data</button>
 
                 <input 
-                ref="uploadFileButton" 
+                ref="uploadFile" 
                 type="file" 
                 accept=".csv" 
                 @change="validateFile"> 
 
             </div>
             <div>
-                <input 
-                type="submit" 
-                class="control-btn" 
-                :class="{disable: !enabledSubmit, enable: enabledSubmit}" 
-                :disabled="enabledSubmit" value="Submit">
+                <button
+                class="control-btn"
+                :class="{disable: !enabledSubmit, enable: enabledSubmit}"
+                :disabled="!enabledSubmit" >
+                Submit 
+                </button>
             </div>
         </form>
         <div
@@ -43,17 +45,22 @@ import { useStore } from 'vuex';
 
 const store = useStore();
 
-const uploadFileButton = ref<HTMLButtonElement | null>()
-let enabledSubmit = ref<boolean>(false);
+const uploadFile = ref()
+let enabledSubmit = ref(false);
 
 const uploadHomeOwnerData = () => {
-    uploadFileButton.value?.click()
+    uploadFile.value?.click()
 }
 
 let uploadErrors: WritableComputedRef<UploadError[]> = computed({
     get(): UploadError[] { return store.getters.getUploadErrors },
     set(uploadErrors: UploadError[]): void { store.commit("setUploadErrors", uploadErrors)}
-})
+});
+
+const homeownCsv:  WritableComputedRef<File | undefined> = computed({
+    get(): File | undefined { return store.getters.getFile },
+    set(file: File | undefined): void { store.commit("setFile", file) }
+});
 
 const validateFile = (e: Event): void => {
 
@@ -82,12 +89,16 @@ const validateFile = (e: Event): void => {
 
     }
 
-
     if(!errors.length){
+        homeownCsv.value = file;
         enabledSubmit.value = true;
     } else {
         uploadErrors.value = errors;
     }
+}
+
+const submitForm = (): void => {
+    store.dispatch("validateHomeownerData");
 }
 
 

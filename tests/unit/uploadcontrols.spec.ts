@@ -14,10 +14,6 @@ const uploadControlsWrapper: VueWrapper<any> = shallowMount(UploadControls, {
 
 describe("UploadControls", () => {
 
-    afterEach(() => {
-        jest.clearAllMocks();
-      });
-
     test("form validation fails - invalid file type", async () => {
         //given
         const file = { type: INVALID_FILE_TYPE };
