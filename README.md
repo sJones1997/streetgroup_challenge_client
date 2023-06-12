@@ -1,5 +1,11 @@
 # streetgroup_challenge_client
 
+## Notes
+
+```
+This is the front end portion of the application, the application will not function correctly without it's backend counterpart.
+```
+
 ## Project setup
 ```
 npm install
