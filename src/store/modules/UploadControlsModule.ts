@@ -1,7 +1,7 @@
 import UploadControlsState from "@/interfaces/UploadControlsInterfaces/UploadControlsState";
 import UploadError from "@/interfaces/UploadControlsInterfaces/UploadError";
 import apiBase from "@/plugins/axios";
-import { AxiosError, HttpStatusCode } from "axios";
+import axios, { AxiosError, HttpStatusCode } from "axios";
 import { ActionContext } from "vuex";
 
 
@@ -15,6 +15,9 @@ const UploadControlsModule = {
     mutations: {
         setUploadErrors: (state: UploadControlsState, uploadErrors: UploadError[]): void => {
             state.uploadErrors = uploadErrors;
+        },
+        addUploadError:(state: UploadControlsState, uploadError: UploadError): void => {
+            state.uploadErrors.push(uploadError);
         },
         setFile: (state: UploadControlsState, file: File): void => {
             state.formData.file = file;
@@ -39,7 +42,15 @@ const UploadControlsModule = {
                 } 
             })
             .catch((err: AxiosError | unknown) => {
-                console.log(err);
+                if(axios.isAxiosError(err)){
+                    console.log()
+                    const error: UploadError = {
+                        msg: err.response?.data.message
+                    }
+                    commit("addUploadError", error);
+                } else {
+                    console.log(err);
+                }
             })
         }
     },

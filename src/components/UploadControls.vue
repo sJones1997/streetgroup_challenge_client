@@ -88,7 +88,6 @@ const validateFile = (e: Event): void => {
         errors.push(uploadError)
 
     }
-
     if(!errors.length){
         homeownCsv.value = file;
         enabledSubmit.value = true;
