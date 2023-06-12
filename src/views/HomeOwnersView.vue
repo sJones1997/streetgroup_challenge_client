@@ -1,11 +1,6 @@
 <template>
     <div class="homeowners-container">
 
-        <!-- Side Bar -->
-        <div class="homeowners-sidebar">
-           <SidebarComponent/>     
-        </div>
-
         <!-- Main View -->
         <div class="homeowners-main">
 
@@ -19,7 +14,7 @@
             </div>
             
             <div>
-                <HomeownersTable/>
+                <HomeownersData/>
             </div>
         
 
@@ -30,8 +25,7 @@
 
 <script setup lang="ts">
 import UploadControls from '@/components/UploadControls.vue';
-import HomeownersTable from '@/components/HomeownersTable.vue'
-import SidebarComponent from '@/components/SidebarComponent.vue'
+import HomeownersData from '@/components/HomeownersData.vue'
 
 </script>
 
