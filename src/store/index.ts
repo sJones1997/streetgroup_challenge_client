@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import UploadControlsModule from './modules/UploadControlsModule'
+import HomeownerDataModule from './modules/HomeownerDataModule'
 
 export default createStore({
   state: {
@@ -11,6 +12,7 @@ export default createStore({
   actions: {
   },
   modules: {
-    UploadControlsModule
+    UploadControlsModule,
+    HomeownerDataModule
   }
 })

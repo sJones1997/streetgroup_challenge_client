@@ -14,7 +14,7 @@
             </div>
             
             <div>
-                <HomeownersTable/>
+                <HomeownersData/>
             </div>
         
 
@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import UploadControls from '@/components/UploadControls.vue';
-import HomeownersTable from '@/components/HomeownersTable.vue'
+import HomeownersData from '@/components/HomeownersData.vue'
 
 </script>
 
